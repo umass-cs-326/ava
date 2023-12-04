@@ -32,7 +32,7 @@ const Tap = {
         failing.push(res);
       });
 
-      tapParser.on('complete', (res) => {
+      tapParser.on('complete', (res) => {        
         resolve({ passing, failing });
       });
 
