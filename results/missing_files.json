@@ -1,0 +1,5 @@
+{
+  "output_format": "html",
+  "output": "You did not provide a valid submission. We detected that some or all of your files are missing. Please make sure that you have submitted all the required files using the <code>npm run submit</code> command.",
+  "score": 0.0
+}
