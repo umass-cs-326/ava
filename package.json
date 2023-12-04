@@ -1,7 +1,7 @@
 {
-  "name": "",
+  "name": "@timdrichards/ava",
   "version": "1.0.0",
-  "description": "",
+  "description": "An auto-grader system for 326/426",
   "main": "index.js",
   "type": "module",
   "license": "AGPL-version-3.0",
@@ -13,26 +13,23 @@
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/umass-cs-326/ava"
   },
   "bugs": "",
   "keywords": [],
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "Tim Richards",
+    "email": "richards@cs.umass.edu",
+    "url": "http://www.cs.umass.edu/~richards"
   },
   "contributors": [
-
+    "Tim Richards"
   ],
   "scripts": {
     "dev": "",
     "test": ""
   },
   "dependencies": {
-
-  },
-  "devDependencies": {
-
+    "tap-parser": "^15.3.1"
   }
 }
