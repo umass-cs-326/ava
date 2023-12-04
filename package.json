@@ -27,10 +27,20 @@
   ],
   "scripts": {
     "tap": "node --test --test-reporter tap | node index.js",
-    "agb": "node bin/agb.js"
+    "agb": "node bin/agb.js",
+    "watch": "tsc -w"
+  },
+  "bin": {
+    "ava": "bin/ava.js",
+    "agb": "bin/agb.js"
   },
   "dependencies": {
     "archiver": "^6.0.1",
     "tap-parser": "^15.3.1"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.2",
+    "@types/node": "^20.10.3",
+    "typescript": "^5.3.2"
   }
 }

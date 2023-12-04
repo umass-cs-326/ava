@@ -7,6 +7,7 @@
  */
 
 import { Parser } from 'tap-parser';
+import process from 'node:process';
 
 const Tap = {
   /**
@@ -20,19 +21,19 @@ const Tap = {
    */
   readTapFromStdIn() {
     return new Promise((resolve, reject) => {
-      const tapParser = new Parser();
-      const passing = [];
-      const failing = [];
+      const tapParser: any = new Parser();
+      const passing: any = [];
+      const failing: any = [];
 
-      tapParser.on('pass', (res) => {
+      tapParser.on('pass', (res: any) => {
         passing.push(res);
       });
 
-      tapParser.on('fail', (res) => {
+      tapParser.on('fail', (res: any) => {
         failing.push(res);
       });
 
-      tapParser.on('complete', (res) => {        
+      tapParser.on('complete', (res: any) => {        
         resolve({ passing, failing });
       });
 
