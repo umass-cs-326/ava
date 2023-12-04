@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert';
 import { describe, it } from 'node:test';
-import { add } from './add.js';
+import { add } from '../source/add.js';
 
 describe('add function tests', () => {
   it('[10] should correctly add two positive numbers', () => {

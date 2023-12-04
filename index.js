@@ -1,5 +1,5 @@
-import Tap from './Tap.js';
-import Points from './Points.js';
+import Tap from './lib/Tap.js';
+import Points from './lib/Points.js';
 
 const results = await Tap.readTapFromStdIn();
 const resultsWithPoints = Points.calculatePoints(results);
