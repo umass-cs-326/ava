@@ -27,9 +27,10 @@
   ],
   "scripts": {
     "tap": "node --test --test-reporter tap | node index.js",
-    "test": ""
+    "agb": "node bin/agb.js"
   },
   "dependencies": {
+    "archiver": "^6.0.1",
     "tap-parser": "^15.3.1"
   }
 }

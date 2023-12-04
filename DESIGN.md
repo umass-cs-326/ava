@@ -22,7 +22,7 @@ node --test -> Tap
             -> results.json
 ```
 
-- `node --test`: The Node test runner producing TAP results on standard output. 
+- `node --test`: The Node test runner producing TAP results on standard output.
 - `Tap`: Maps the TAP results to an object containing the passing tests and the
 failing tests.
 - `Points`: Takes the passing and failing tests and accumulates the points. This
@@ -33,3 +33,14 @@ called results that models the format of the results.json file defined by
 Gradescope.
 - `ResultsJSON`: Generates the `results.json` file to standard out, formatted
 with 2 spaces.
+
+In addition to the execution of the auto-grader itself, we need to create a packaged auto-grader with the gradescope files. The pack
+
+```text
+run_autograder
+setup.sh
+lib/
+package.json
+package-lock.json
+tests
+```
