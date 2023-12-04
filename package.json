@@ -26,7 +26,7 @@
     "Tim Richards"
   ],
   "scripts": {
-    "tap": "node --test --test-reporter tap | node index.js",
+    "tap": "node --test --test-reporter tap | node ./dist/bin/index.js",
     "agb": "node bin/agb.js",
     "watch": "tsc -w"
   },
