@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "tap": "node --test --test-reporter tap | node ./dist/bin/index.js",
-    "agb": "node bin/agb.js",
+    "agb": "node ./dist/bin/agb.js",
     "watch": "tsc -w"
   },
   "bin": {

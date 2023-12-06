@@ -20,7 +20,7 @@ const Tap = {
    *                            - `failing`: An array of failing tests.
    */
   readTapFromStdIn(): Promise<{ passing: any[]; failing: any[] }> {
-    return new Promise((resolve, reject) => {      
+    return new Promise((resolve, reject) => {
       const tapParser: any = new Parser();
       const passing: any = [];
       const failing: any = [];
