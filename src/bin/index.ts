@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-import { TestRunnerFactory } from '../lib/test-runner.js';
+import { nodeTestRunnerTap } from "../lib/test-runner-fn.js";
 
-const testRunner = TestRunnerFactory.makeNodeTestRunner([
-  './tests/add.test.js',
-]);
-const results = testRunner.runTests().then(results => {
+const results = nodeTestRunnerTap(["./tests"]).then((results) => {
   console.log(results);
 });
