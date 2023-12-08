@@ -1,8 +1,7 @@
 import { tap } from 'node:test/reporters';
 import { run } from 'node:test';
 import path from 'node:path';
-import { Parser, Result } from 'tap-parser';
-import { Transform, Writable } from 'node:stream';
+import { Parser } from 'tap-parser';
 
 // type Diagnostic = {
 //   location: string;
