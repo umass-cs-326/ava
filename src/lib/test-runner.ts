@@ -2,6 +2,7 @@ import { tap } from 'node:test/reporters';
 import { run } from 'node:test';
 import path from 'node:path';
 import { Parser } from 'tap-parser';
+import * as fs from 'fs/promises';
 
 // type Diagnostic = {
 //   location: string;
@@ -35,14 +36,14 @@ import { Parser } from 'tap-parser';
 
 type PassingTest = { testname: string; points: number };
 type FailingTest = { testname: string; points: number; reason: string };
-type TestResults = { passing: PassingTest[]; failing: FailingTest[] };
+export type TestResults = { passing: PassingTest[]; failing: FailingTest[] };
 
 interface TestFramework {
   runTests: () => Promise<TestResults>;
 }
 
 class NodeTestRunner implements TestFramework {
-  #testFiles: string[] = [];
+  #testDirs: string[] = [];
 
   #extractPoints(input: string): { testname: string; points: number } {
     const match = input.match(/\[(\d+)\](.+)/);
@@ -55,12 +56,25 @@ class NodeTestRunner implements TestFramework {
     throw new Error(`Could not extract points from test name: ${input}`);
   }
 
-  constructor(testFiles: string[]) {
-    this.#testFiles = testFiles;
+  async #gatherFiles(dirs: string[], pattern: RegExp): Promise<string[]> {
+    const files_1 = await Promise.all(
+      dirs.map(async (dir) => {
+        const files = await fs.readdir(dir);
+        return files
+          .filter(file => pattern.test(file))
+          .map(file_1 => path.join(dir, file_1));
+      })
+    );
+    return files_1.flat();
   }
 
-  runTests(): Promise<TestResults> {
-    const files = this.#testFiles.map(file => path.resolve(file));
+  constructor(testDirs: string[]) {
+    this.#testDirs = testDirs;
+  }
+
+  async runTests(): Promise<TestResults> {
+    const files = await this.#gatherFiles(this.#testDirs, /.*\.test\.js$/);
+    const resolvedFiles = files.map(file => path.resolve(file));
     const tapParser = new Parser();
     const results: TestResults = { passing: [], failing: [] };
 
@@ -83,7 +97,7 @@ class NodeTestRunner implements TestFramework {
         reject(err);
       });
 
-      run({ files: files }).compose(tap).pipe(tapParser);
+      run({ files: resolvedFiles }).compose(tap).pipe(tapParser);
     });
   }
 }

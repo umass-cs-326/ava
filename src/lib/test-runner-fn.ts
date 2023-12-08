@@ -45,35 +45,40 @@ const extractPoints = (input: string): GenericTest => {
   throw new Error(`Could not extract points from test name: ${input}`);
 };
 
-export const nodeTestRunnerTap = async (testDirs: string[]): Promise<TestResults> => {
+export const nodeTestRunnerTap = async (
+  testDirs: string[]
+): Promise<TestResults> => {
   const parser = new Parser();
-  const passing: PassingTest[] = [];
-  const failing: FailingTest[] = [];
+  const results: TestResults = { passing: [], failing: [] };
   const tapParser = new Parser();
-
   const xs = await testFiles(testDirs, /.*\.test\.js$/);
   const files = xs.map(file => path.resolve(file));
 
-  parser.on('assert', (assert: any) => {
-    if (assert.ok) {
-      passing.push(extractPoints(assert.name));
-    } else {
-      failing.push({
-        ...extractPoints(assert.name),
-        reason: assert.diag.message,
-      });
-    }
+  return new Promise<TestResults>((resolve, reject) => {
+    parser.on('assert', (assert: any) => {
+      if (assert.ok) {
+        results.passing.push(extractPoints(assert.name));
+      } else {
+        results.failing.push({
+          ...extractPoints(assert.name),
+          reason: assert.diag.message,
+        });
+      }
+    });
+
+    parser.on('complete', (results: any) => {
+      if (results.ok) {
+        console.log('All tests passed');
+      } else {
+        console.log('Some tests failed');
+      }
+      resolve(results);
+    });
+
+    parser.on('error', (error: any) => {
+      reject(error);
+    });
+
+    run({ files: files }).compose(tap).pipe(tapParser);
   });
-
-  parser.on('complete', (results: any) => {
-    if (results.ok) {
-      console.log('All tests passed');
-    } else {
-      console.log('Some tests failed');
-    }
-  });
-
-  run({ files: files }).compose(tap).pipe(tapParser);
-
-  return { passing, failing };
 };
