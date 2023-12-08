@@ -2,6 +2,7 @@ import { tap } from 'node:test/reporters';
 import { run } from 'node:test';
 import path from 'node:path';
 import { Parser, Result } from 'tap-parser';
+import { Transform, Writable } from 'node:stream';
 
 // type Diagnostic = {
 //   location: string;
@@ -38,54 +39,58 @@ type FailingTest = { testname: string; points: number; reason: string };
 type TestResults = { passing: PassingTest[]; failing: FailingTest[] };
 
 interface TestFramework {
-  runTests: () => TestResults;
-}
-
-class TapParserStream extends Parser {
-  #testResults: TestResults = { passing: [], failing: [] };
-
-  constructor() {
-    super();
-  }
-
-  emit(eventName: string | symbol, ...args: any[]): boolean {
-    if (eventName === 'pass') {
-      const result = args as Result[];
-      const testResult = result[0];
-      console.log('Test passed: ', testResult.name);
-    }
-    else if (eventName === 'fail') {
-      const result = args as Result[];
-      const testResult = result[0];
-      console.log('Test failed: ', testResult.name);
-    }
-    return true;
-  }
-
-  getTestResults(): TestResults {
-    return this.#testResults;
-  }
+  runTests: () => Promise<TestResults>;
 }
 
 class NodeTestRunner implements TestFramework {
   #testFiles: string[] = [];
-  #tapParser: Parser = new Parser();
+
+  #extractPoints(input: string): { testname: string; points: number } {
+    const match = input.match(/\[(\d+)\](.+)/);
+    if (match && match[1]) {
+      return {
+        points: parseInt(match[1], 10),
+        testname: match[2].trim(),
+      };
+    }
+    throw new Error(`Could not extract points from test name: ${input}`);
+  }
 
   constructor(testFiles: string[]) {
     this.#testFiles = testFiles;
   }
 
-  runTests(): TestResults {
+  runTests(): Promise<TestResults> {
     const files = this.#testFiles.map(file => path.resolve(file));
-    const tapParser = new TapParserStream();
-    run({ files: files }).compose(tap).pipe(tapParser);
-    return tapParser.getTestResults();
+    const tapParser = new Parser();
+    const results: TestResults = { passing: [], failing: [] };
+
+    return new Promise((resolve, reject) => {
+      tapParser.on('pass', (res: any) => {
+        const { testname, points } = this.#extractPoints(res.name);
+        results.passing.push({ testname, points });
+      });
+
+      tapParser.on('fail', (res: any) => {
+        const { testname, points } = this.#extractPoints(res.name);
+        results.failing.push({ testname, points, reason: res.diag.error });
+      });
+
+      tapParser.on('complete', (res: any) => {
+        resolve(results);
+      });
+
+      tapParser.on('error', (err: any) => {
+        reject(err);
+      });
+
+      run({ files: files }).compose(tap).pipe(tapParser);
+    });
   }
 }
 
 export class TestRunnerFactory {
   static makeNodeTestRunner(testFiles: string[]): TestFramework {
-    console.log('Creating NodeTestRunner');
     return new NodeTestRunner(testFiles);
   }
 }
