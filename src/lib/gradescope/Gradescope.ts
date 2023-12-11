@@ -1,5 +1,3 @@
-import { Result } from './Types';
-
 type GradescopeTestCase = {
   score: number;
   max_score: number;
@@ -38,12 +36,12 @@ type GradescopeResult = {
   tests: GradescopeTests;
 };
 
-type Gradescope = {
-  generateResultJSON: (result: Result) => GradescopeResult;
-};
+// type Gradescope = {
+//   generateResultJSON: (result: Result) => GradescopeResult;
+// };
 
-const gradescope: Gradescope = {
-  generateResultJSON: (result: Result): GradescopeResult => {
-    throw new Error('Function not implemented.');
-  }
-};
+// const gradescope: Gradescope = {
+//   generateResultJSON: (result: Result): GradescopeResult => {
+//     throw new Error('Function not implemented.');
+//   }
+// };

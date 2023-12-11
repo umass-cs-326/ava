@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { TestRunnerFactory, TestResults } from '../lib/test-runner.js';
+import { TestRunnerFactory, TestResults } from '../lib/autograder/test-runner.js';
 
 async function main() {
   try {
